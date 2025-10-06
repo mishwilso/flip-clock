@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Eclectic Flip Countdown (MM:SS)</title>
+  <link rel="stylesheet" href="style.css?v=1"/>
+  <meta name="color-scheme" content="light">
+</head>
+<body>
+  <main class="screen">
+    <section class="card">
+      <header class="head">
+        <h1>Flip Countdown <span class="kaomoji">(｡•̀ᴗ-)✧</span></h1>
+        <p>Up to <b>99 minutes</b>. Color it to match your vibe.</p>
+      </header>
+
+      <form class="controls" id="controls" onsubmit="return false;">
+        <div class="time-inputs">
+          <label>
+            <span>Minutes</span>
+            <input id="minInput" type="number" min="0" max="99" step="1" value="10" inputmode="numeric">
+          </label>
+          <label>
+            <span>Seconds</span>
+            <input id="secInput" type="number" min="0" max="59" step="1" value="00" inputmode="numeric">
+          </label>
+        </div>
+
+        <div class="palette">
+          <label class="select-wrap">
+            <span>Palette</span>
+            <select id="preset">
+              <option value="tangerine">🍊 Tangerine Pop</option>
+              <option value="juice">🧃 Juice Box</option>
+              <option value="indigo">🔮 Indigo Night</option>
+              <option value="mint">🌱 Mint Soda</option>
+              <option value="tomato">🍅 Pomodoro</option>
+              <option value="custom">🎨 Custom</option>
+            </select>
+          </label>
+
+          <label class="color-wrap" id="colorWrap" title="Custom color">
+            <span>Face</span>
+            <input id="colorPick" type="color" value="#222222">
+          </label>
+
+          <label class="color-wrap" title="Digit color">
+            <span>Digits</span>
+            <input id="digitPick" type="color" value="#ffffff">
+          </label>
+        </div>
+
+        <div class="buttons">
+          <button id="startBtn" class="btn primary">Start</button>
+          <button id="pauseBtn" class="btn">Pause</button>
+          <button id="resetBtn" class="btn ghost">Reset</button>
+        </div>
+      </form>
+
+      <div id="clock" class="flip-clock" aria-label="countdown timer"></div>
+
+      <footer class="footnote">
+        Tip: In Notion, use <b>/embed</b> → paste your GitHub Pages URL.
+      </footer>
+    </section>
+  </main>
+
+  <script src="app.js?v=1"></script>
+</body>
+</html>
