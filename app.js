@@ -213,6 +213,79 @@ digitPick.addEventListener('input', ()=>{
   document.documentElement.style.setProperty('--flip-digit-top', shade(digit, -30));
 });
 
+// --- Responsive fit: scales the clock to available space ---
+// Wrap clock in a shell so we can scale without affecting layout
+(function makeResponsiveClock(){
+  const card   = document.getElementById('timerCard');
+  const clock  = document.getElementById('clock');
+
+  // create shell only once
+  let shell = clock.parentElement.classList.contains('clock-shell')
+    ? clock.parentElement
+    : (() => {
+        const s = document.createElement('div');
+        s.className = 'clock-shell';
+        clock.replaceWith(s);
+        s.appendChild(clock);
+        return s;
+      })();
+
+  const controls = document.querySelector('.controls');
+
+  // natural (unscaled) size we designed around
+  // we can measure once after render
+  function naturalSize(){
+    // temporarily reset scale to measure
+    shell.style.transform = 'scale(1)';
+    const w = shell.offsetWidth;
+    const hClock = shell.offsetHeight;
+    const hBtns  = controls ? controls.offsetHeight : 0;
+    return { w, h: hClock + hBtns + 16 /* little breathing space */ };
+  }
+
+  let base = null;
+
+  function fit(){
+    if (!base) base = naturalSize();
+
+    // available space inside the card
+    const style = getComputedStyle(card);
+    const padY  = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+    const padX  = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+
+    const availW = card.clientWidth  - padX;
+    const availH = card.clientHeight - padY;
+
+    // scale so both width & height fit
+    const sW = availW / base.w;
+    const sH = availH / base.h;
+    const scale = Math.max(0.5, Math.min(sW, sH)); // don’t go tinier than 50% for legibility
+
+    shell.style.transform = `scale(${scale})`;
+
+    // center the scaled block
+    const scaledH = base.h * scale;
+    const extraY  = Math.max(0, (availH - scaledH) / 2);
+    shell.style.marginTop = `${extraY}px`;
+    shell.style.marginBottom = `${extraY}px`;
+  }
+
+  // react to size changes
+  const ro = new ResizeObserver(fit);
+  ro.observe(card);
+  window.addEventListener('resize', fit, { passive:true });
+
+  // Initial fit (wait one frame so CSS has applied)
+  requestAnimationFrame(()=>{ base=null; fit(); });
+
+  // Re-fit after we change inputs/palette (optional but nice)
+  ['applyBtn','sheetResetBtn','startBtn','pauseBtn','resetBtn'].forEach(id=>{
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('click', ()=> requestAnimationFrame(()=>{ base=null; fit(); }));
+  });
+})();
+
+
 // defaults
 applyPalette(PALETTES.tangerine);
 // initialize digits from inputs (10:00 default)

@@ -31,7 +31,7 @@ body{
   height:100dvh;
   display:grid;
   place-items:center;
-  padding:12px;
+  padding:8px;
   overflow:auto;   /* scroll only if truly needed */
 }
 
@@ -42,7 +42,8 @@ body{
   box-shadow:var(--shadow);
   border-radius:var(--radius);
   padding:12px 12px 14px;
-  width:min(520px, 96vw);
+  width:min(560px, 98vw);
+  margin-inline: auto;
   overflow:hidden;
 }
 .timer-card::before,.timer-card::after{
@@ -64,12 +65,21 @@ body{
   font-size:14px; box-shadow:0 4px 10px rgba(0,0,0,.08);
 }
 
+
+/* A shell we scale with JS (add this even if not in your CSS yet) */
+.clock-shell{
+  display: grid;
+  place-items: center;
+  transform-origin: top center;  /* scale from top for nicer feel */
+  will-change: transform;
+}
+
 /* clock layout */
 .flip-clock{
   display: flex;                 /* lay pieces in a row */
   align-items: center;
   justify-content: center;
-  gap: 12px;                     /* space between MIN / SEC */
+  gap: clamp(6px, 1.6vw, 14px);                    /* space between MIN / SEC */
   text-align: center;
   perspective: 400px;
   margin: 6px auto 8px;
@@ -83,7 +93,7 @@ body{
 .card-figure{
   position: relative;
   padding-bottom: 0.72em;                 /* “half height” */
-  font-size: clamp(36px, 18vw, 120px);    /* auto-scale with container */
+  font-size: clamp(28px, 15vw, 120px);    /* auto-scale with container */
   line-height: 1;                         /* crucial for alignment */
   font-variant-numeric: tabular-nums;     /* monospaced digits */
 }
