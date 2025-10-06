@@ -3,135 +3,142 @@
   --ink:#1b1a19;
   --muted:#6b6b6b;
   --card:#fffdf8;
-  --shadow:0 10px 30px rgba(0,0,0,.1);
+  --shadow:0 10px 30px rgba(0,0,0,.10);
+  --radius:18px;
 
-  /* flip face & digit colors (these can be changed via JS) */
+  /* flip colors (overridable in JS) */
   --flip-face:#222222;
   --flip-face-bottom:#393939;
   --flip-digit:#ffffff;
   --flip-digit-top:#cccccc;
-
-  --radius:18px;
 }
 
 /* page & vibe */
 html,body{height:100%; margin:0}
 body{
   color:var(--ink);
-  font:16px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+  font:16px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
   background:
     radial-gradient(18px 18px at 6% 8%, rgba(255,183,3,.18) 0 40%, transparent 41%),
     radial-gradient(24px 24px at 90% 12%, rgba(110,231,183,.18) 0 40%, transparent 41%),
     radial-gradient(18px 18px at 78% 88%, rgba(255,123,114,.16) 0 40%, transparent 41%),
     repeating-linear-gradient(90deg, rgba(0,0,0,.03) 0 28px, rgba(0,0,0,0) 29px 56px);
   background-attachment: fixed;
-  overflow:hidden; /* Notion-friendly; no page scroll unless needed */
+  overflow:hidden; /* prevent page scroll inside Notion */
 }
-.screen{
+
+.stage{
   height:100dvh;
   display:grid;
   place-items:center;
-  padding:16px;
-  overflow:auto;
+  padding:12px;
+  overflow:auto;   /* scroll only if truly needed */
 }
 
-/* the card */
-.card{
-  width:min(640px, 92vw);
-  background:var(--card);
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  padding:20px;
+/* compact timer card */
+.timer-card{
   position:relative;
+  background:var(--card);
+  box-shadow:var(--shadow);
+  border-radius:var(--radius);
+  padding:12px 12px 14px;
+  width:min(520px, 96vw);
   overflow:hidden;
 }
-.card::before,.card::after{
-  content:""; position:absolute; width:160px; height:160px; pointer-events:none; opacity:.25;
+.timer-card::before,.timer-card::after{
+  content:""; position:absolute; width:150px; height:150px; pointer-events:none; opacity:.22;
   background:
     radial-gradient(circle at 30% 30%, rgba(255,183,3,.5), rgba(255,183,3,0) 60%),
     radial-gradient(circle at 70% 60%, rgba(255,123,114,.45), rgba(255,123,114,0) 60%),
     radial-gradient(circle at 60% 20%, rgba(110,231,183,.45), rgba(110,231,183,0) 60%);
-  transform:rotate(12deg);
-  filter:blur(.2px);
+  transform:rotate(10deg); filter:blur(.2px);
 }
-.card::before{ top:-40px; left:-40px}
-.card::after{ bottom:-40px; right:-40px; transform:rotate(-8deg)}
+.timer-card::before{ top:-40px; left:-40px}
+.timer-card::after{ bottom:-40px; right:-40px; transform:rotate(-8deg)}
 
-.head h1{
-  margin:0 0 4px; font-weight:800; font-size:clamp(20px,3.2vw,28px);
+/* tiny gear button (top-left) */
+.gear{
+  position:absolute; top:6px; left:6px;
+  border:0; background:#ffffffcc; backdrop-filter:blur(4px);
+  border-radius:10px; padding:6px 8px; cursor:pointer;
+  font-size:14px; box-shadow:0 4px 10px rgba(0,0,0,.08);
 }
-.head p{margin:0; color:var(--muted)}
-.kaomoji{font-weight:700; opacity:.9}
 
-/* controls */
-.controls{display:grid; gap:12px; margin-top:12px}
-.time-inputs{display:flex; gap:10px}
-.time-inputs label{display:grid; font-size:12px; color:#333}
-.time-inputs input{
-  font:700 18px/1.2 ui-sans-serif, system-ui;
-  padding:10px 12px; border-radius:12px; border:1px dashed rgba(0,0,0,.2);
-  background:#fff; width:120px;
-}
-.palette{display:flex; gap:10px; flex-wrap:wrap}
-.select-wrap, .color-wrap{display:grid; font-size:12px; color:#333}
-.select-wrap select,
-.color-wrap input{
-  padding:10px 12px; border-radius:12px; border:1px dashed rgba(0,0,0,.2);
-  background:#fff;
-  font:600 14px/1.2 ui-sans-serif, system-ui;
-}
-.color-wrap input[type="color"]{height:42px; width:120px; padding:4px}
-
-.buttons{display:flex; gap:10px; flex-wrap:wrap}
-.btn{
-  appearance:none; border:0; cursor:pointer;
-  background:linear-gradient(135deg, #ffd580, #ff7b72);
-  color:#2b1b00; font-weight:800; letter-spacing:.2px;
-  padding:10px 14px; border-radius:12px; box-shadow:0 6px 14px rgba(0,0,0,.12);
-  transition:transform .06s ease, filter .15s ease;
-}
-.btn:hover{filter:saturate(1.05) brightness(1.02)}
-.btn:active{transform:translateY(1px) scale(.99)}
-.btn.ghost{background:linear-gradient(135deg, #e5e7eb, #d1d5db); color:#222}
-.btn.primary{background:linear-gradient(135deg,#ffb703,#ff7b72)}
-
+/* clock layout */
 .flip-clock{
-  text-align:center; perspective:400px; margin:16px auto 6px;
+  display: flex;                 /* lay pieces in a row */
+  align-items: center;
+  justify-content: center;
+  gap: 12px;                     /* space between MIN / SEC */
+  text-align: center;
+  perspective: 400px;
+  margin: 6px auto 8px;
+  flex-wrap: nowrap;             /* prevent stacking */
 }
-.flip-clock__piece{ display:inline-block; margin:0 6px }
-.flip-clock__slot{ font-size:12px; color:#444; letter-spacing:.2px }
+.flip-clock__piece{ display: inline-flex; margin: 0 } /* inline-flex is fine now */
+.flip-clock__slot{ font-size:11px; color:#444; letter-spacing:.2px }
 
-/* Flip card sizing */
+/* --- FIXED ALIGNMENT --- */
+/* Use tabular numbers + centered flex for all faces */
 .card-figure{
-  display:block; position:relative; padding-bottom:0.72em;
-  font-size: clamp(40px, 13vw, 96px);
-  line-height:0.95;
+  position: relative;
+  padding-bottom: 0.72em;                 /* “half height” */
+  font-size: clamp(36px, 18vw, 120px);    /* auto-scale with container */
+  line-height: 1;                         /* crucial for alignment */
+  font-variant-numeric: tabular-nums;     /* monospaced digits */
 }
-.card__top, .card__bottom, .card__back::before, .card__back::after{
-  display:block; height:0.72em; width:1.8em;
+.card__top,
+.card__bottom,
+.card__back::before,
+.card__back::after{
+  display:flex; align-items:start; justify-content:center;
+  height:0.72em; width:1.8em;
   color:var(--flip-digit-top);
   background:var(--flip-face);
   padding:0.25em;
-  border-radius:0.15em 0.15em 0 0;
+  box-sizing: border-box;
+  border-radius:0.18em 0.18em 0 0;
   backface-visibility:hidden;
   transform-style:preserve-3d;
   transform:translateZ(0);
+  /* margin-bottom: 0px; */
+}
+
+/* colors */
+.card__top,
+.card__back::before{
+  color: var(--flip-digit-top);
+  background: var(--flip-face);
+  border-radius: .18em .18em 0 0;
 }
 .card__bottom{
-  color:var(--flip-digit);
-  position:absolute; top:50%; left:0;
-  border-top:1px solid rgba(0,0,0,.6);
-  background:var(--flip-face-bottom);
-  border-radius:0 0 0.15em 0.15em;
-  pointer-events:none; overflow:hidden;
+  color: var(--flip-digit);
+  position: absolute;
+  top: 50%;
+  left: 0;
+  background: var(--flip-face-bottom);
+  border-top: 1px solid rgba(0,0,0,.55);
+  border-radius: 0 0 .18em .18em;
+  pointer-events: none;
+  overflow: hidden;
 }
-.card__bottom::after{
-  display:block; margin-top:-0.72em; content:attr(data-value);
-}
-.card__back{ position:absolute; top:0; left:0; height:100%; pointer-events:none }
-.card__back::before{ position:relative; z-index:-1; overflow:hidden; content:attr(data-value) }
 
-/* Flip animations */
+/* draw the lower half by reprinting the digit and shifting it up EXACTLY half height */
+.card__bottom::after{
+  content: attr(data-value);
+  color: inherit;
+  background: transparent;
+  transform: translateY(-0.72em);         /* precise half shift */
+}
+
+/* back faces (for flip animation) */
+.card__back{ position:absolute; top:0; left:0; height:100%; pointer-events:none }
+.card__back::before{
+  content:attr(data-value);
+  position:relative; z-index:-1; overflow:hidden;
+}
+
+/* FLIP ANIMS */
 .flip .card__back::before{
   animation:flipTop .3s cubic-bezier(.37,.01,.94,.35) both;
   transform-origin:center bottom;
@@ -151,11 +158,55 @@ body{
   100%{ opacity:.99; transform:rotateX(0deg); z-index:5 }
 }
 
-.footnote{ margin-top:8px; color:var(--muted); font-size:12px }
+/* buttons row */
+.controls{ display:flex; justify-content:center; gap:8px; margin-top:6px; flex-wrap:wrap }
+.btn{
+  appearance:none; border:0; cursor:pointer;
+  background:linear-gradient(135deg, #ffd580, #ff7b72);
+  color:#2b1b00; font-weight:800; letter-spacing:.2px;
+  padding:8px 12px; border-radius:12px; box-shadow:0 6px 14px rgba(0,0,0,.12);
+  transition:transform .06s ease, filter .15s ease; font-size:14px;
+}
+.btn:hover{ filter:saturate(1.05) brightness(1.02) }
+.btn:active{ transform:translateY(1px) scale(.99) }
+.btn.ghost{ background:linear-gradient(135deg, #e5e7eb, #d1d5db); color:#222 }
+.btn.primary{ background:linear-gradient(135deg,#ffb703,#ff7b72) }
+
+/* overlay sheet on top of timer */
+.overlay{
+  position:absolute; inset:0;
+  background:rgba(250,246,239,.65);
+  backdrop-filter: blur(6px);
+  display:none; align-items:center; justify-content:center;
+}
+.overlay.show{ display:flex }
+
+.sheet{
+  width:min(520px, 92vw);
+  background:#fff; border-radius:16px; box-shadow:var(--shadow);
+  padding:14px;
+}
+.sheet-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px }
+.sheet-head h2{ margin:0; font-size:18px }
+.xbtn{
+  border:0; background:#f2f2f2; border-radius:10px; padding:6px 8px; cursor:pointer
+}
+.grid{
+  display:grid; gap:10px; grid-template-columns: repeat(3, minmax(0,1fr));
+}
+.field{ display:grid; font-size:12px; color:#333 }
+.field input[type="number"],
+.field select,
+.field input[type="color"]{
+  padding:10px 12px; border-radius:12px; border:1px dashed rgba(0,0,0,.2);
+  background:#fff; font:600 14px/1.2 ui-sans-serif, system-ui;
+}
+.field input[type="color"]{ height:42px }
+
+.sheet-actions{ display:flex; gap:8px; justify-content:flex-end; margin-top:8px }
 
 /* small screens */
 @media (max-width:420px){
-  .card{ width:min(600px, 94vw); padding:16px }
-  .time-inputs input{ width:100px }
-  .color-wrap input[type="color"]{ width:100px }
+  .timer-card{ width:min(360px, 96vw); padding:10px 10px 12px }
+  .grid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
 }

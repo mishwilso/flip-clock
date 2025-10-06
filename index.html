@@ -3,69 +3,75 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Eclectic Flip Countdown (MM:SS)</title>
-  <link rel="stylesheet" href="style.css?v=1"/>
+  <title>Flip Countdown — Compact</title>
+  <link rel="stylesheet" href="style.css?v=2"/>
   <meta name="color-scheme" content="light">
 </head>
 <body>
-  <main class="screen">
-    <section class="card">
-      <header class="head">
-        <h1>Flip Countdown <span class="kaomoji">(｡•̀ᴗ-)✧</span></h1>
-        <p>Up to <b>99 minutes</b>. Color it to match your vibe.</p>
-      </header>
+  <main class="stage">
+    <section class="timer-card" id="timerCard">
+      <!-- corner toggle -->
+      <button id="gearBtn" class="gear" aria-label="Open settings">⚙️</button>
 
-      <form class="controls" id="controls" onsubmit="return false;">
-        <div class="time-inputs">
-          <label>
-            <span>Minutes</span>
-            <input id="minInput" type="number" min="0" max="99" step="1" value="10" inputmode="numeric">
-          </label>
-          <label>
-            <span>Seconds</span>
-            <input id="secInput" type="number" min="0" max="59" step="1" value="00" inputmode="numeric">
-          </label>
-        </div>
-
-        <div class="palette">
-          <label class="select-wrap">
-            <span>Palette</span>
-            <select id="preset">
-              <option value="tangerine">🍊 Tangerine Pop</option>
-              <option value="juice">🧃 Juice Box</option>
-              <option value="indigo">🔮 Indigo Night</option>
-              <option value="mint">🌱 Mint Soda</option>
-              <option value="tomato">🍅 Pomodoro</option>
-              <option value="custom">🎨 Custom</option>
-            </select>
-          </label>
-
-          <label class="color-wrap" id="colorWrap" title="Custom color">
-            <span>Face</span>
-            <input id="colorPick" type="color" value="#222222">
-          </label>
-
-          <label class="color-wrap" title="Digit color">
-            <span>Digits</span>
-            <input id="digitPick" type="color" value="#ffffff">
-          </label>
-        </div>
-
-        <div class="buttons">
-          <button id="startBtn" class="btn primary">Start</button>
-          <button id="pauseBtn" class="btn">Pause</button>
-          <button id="resetBtn" class="btn ghost">Reset</button>
-        </div>
-      </form>
-
+      <!-- the flip clock -->
       <div id="clock" class="flip-clock" aria-label="countdown timer"></div>
 
-      <footer class="footnote">
-        Tip: In Notion, use <b>/embed</b> → paste your GitHub Pages URL.
-      </footer>
+      <!-- primary controls -->
+      <div class="controls">
+        <button id="startBtn" class="btn primary">Start</button>
+        <button id="pauseBtn" class="btn">Pause</button>
+        <button id="resetBtn" class="btn ghost">Reset</button>
+      </div>
+
+      <!-- overlay settings sheet -->
+      <div id="overlay" class="overlay" aria-hidden="true">
+        <div class="sheet">
+          <header class="sheet-head">
+            <h2>Settings (˘◡˘)</h2>
+            <button id="closeOverlay" class="xbtn" aria-label="Close">✕</button>
+          </header>
+
+          <div class="grid">
+            <label class="field">
+              <span>Minutes</span>
+              <input id="minInput" type="number" min="0" max="99" step="1" value="10" inputmode="numeric">
+            </label>
+            <label class="field">
+              <span>Seconds</span>
+              <input id="secInput" type="number" min="0" max="59" step="1" value="00" inputmode="numeric">
+            </label>
+
+            <label class="field">
+              <span>Palette</span>
+              <select id="preset">
+                <option value="tangerine">🍊 Tangerine Pop</option>
+                <option value="juice">🧃 Juice Box</option>
+                <option value="indigo">🔮 Indigo Night</option>
+                <option value="mint">🌱 Mint Soda</option>
+                <option value="tomato">🍅 Pomodoro</option>
+                <option value="custom">🎨 Custom</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Face</span>
+              <input id="colorPick" type="color" value="#222222">
+            </label>
+            <label class="field">
+              <span>Digits</span>
+              <input id="digitPick" type="color" value="#ffffff">
+            </label>
+          </div>
+
+          <div class="sheet-actions">
+            <button id="applyBtn" class="btn primary">Apply</button>
+            <button id="sheetResetBtn" class="btn ghost">Reset to inputs</button>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 
-  <script src="app.js?v=1"></script>
+  <script src="app.js?v=2"></script>
 </body>
 </html>
